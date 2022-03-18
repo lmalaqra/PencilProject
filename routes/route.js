@@ -9,6 +9,7 @@ const {
   updateTopicNamebyNameHandler,
 } = require("./controller");
 
+//create Topics db
 router.get("/read", async (req, res) => {
   fs.createReadStream("./puplic/uploads/topics.csv", { encoding: "utf-8" })
     .on("data", async (chunk) => {
@@ -19,6 +20,7 @@ router.get("/read", async (req, res) => {
       console.log(error);
     });
 });
+//create QuestionsDB
 router.get("/questions", async (req, res) => {
   fs.createReadStream("./puplic/uploads/p.csv", { encoding: "utf-8" })
     .on("data", async (chunk) => {
@@ -29,12 +31,16 @@ router.get("/questions", async (req, res) => {
       console.log(error);
     });
 });
+
+//main function
 router.get("/search", async (req, res) => {
   const name = req.query.q;
 
   const numbers = await getQuestions(name);
   res.json(numbers);
 });
+
+///test for updating Topics tree nomes when changing node name
 router.get("/updateName", async (req, res) => {
   try {
     const { preName, name } = req.query;

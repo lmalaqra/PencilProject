@@ -13,13 +13,13 @@ const createTopicsDb = async (arr) => {
   const parsedArray = csvToArray(arr);
   for (let i = 0; i < parsedArray.length; i++) {
     if (i === 0) continue;
-    const topic = await handleRows(parsedArray[i]);
+    const topic = await handleTopicRows(parsedArray[i]);
     topics.push(topic);
   }
   return topics;
 };
 
-const handleRows = async (arr) => {
+const handleTopicRows = async (arr) => {
   const topics = [];
   for (let i = 0; i < arr.length; i++) {
     if (arr[i].isBlank) continue;
@@ -34,6 +34,7 @@ const handleRows = async (arr) => {
   return topics;
 };
 
+// convert cvs to arrays
 function csvToArray(text) {
   let p = "",
     row = [""],
