@@ -1,9 +1,4 @@
-const { Topic, Question } = require("./model");
-const mongoose = require("mongoose");
-
-const updateName = async (id, contet) => {
-  const topic = await Topic.findOneAndUpdate({ id }, { content });
-};
+const { Topic, Question } = require("../model/model");
 
 const updateAncestorTopicsNames = async (preName, postName) => {
   try {
@@ -20,13 +15,13 @@ const updateAncestorTopicsNames = async (preName, postName) => {
 const buildAncestors = async (id, parent_id) => {
   let ancest = [];
   try {
-    let parent_category = await Topic.findOne(
+    let parent_topic = await Topic.findOne(
       { _id: parent_id },
       { name: 1, ancestors: 1 }
     ).exec();
-    if (parent_category) {
-      const { _id, name } = parent_category;
-      const ancest = [...parent_category.ancestors];
+    if (parent_topic) {
+      const { _id, name } = parent_topic;
+      const ancest = [...parent_topic.ancestors];
       ancest.unshift({ _id, name });
       return await Topic.findByIdAndUpdate(id, {
         $set: { ancestors: ancest },
@@ -73,7 +68,7 @@ const getTopicsIdByName = async (name) => {
   });
 };
 
-const getQuestionByIds = async (ids) => {
+const getQuestionByTopicIds = async (ids) => {
   console.log(ids);
   const questions = await Question.find({ topics: { $in: ids } })
     .select({
@@ -99,6 +94,10 @@ const updateTopicNamebyName = async (prename, name) => {
   });
   return updatedTopic;
 };
+
+const getUpdatedAncestors = async (name, post) => {
+  return await updateAncestorTopicsNames(name, post);
+};
 module.exports = {
   updateAncestorTopicsNames,
   createFatherTopic,
@@ -106,6 +105,6 @@ module.exports = {
   createNewQuestion,
   findTopicByName,
   getTopicsIdByName,
-  getQuestionByIds,
+  getQuestionByTopicIds,
   updateTopicNamebyName,
 };

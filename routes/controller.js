@@ -4,7 +4,8 @@ const {
   findTopicByName,
   createNewQuestion,
   getTopicsIdByName,
-  getQuestionByIds,
+  getQuestionByTopicIds,
+  updateTopicNamebyName,
 } = require("./services");
 
 const createTopicsDb = async (arr) => {
@@ -91,8 +92,16 @@ const handleQuestionsRows = async (arr) => {
 
 const getQuestions = async (name) => {
   const ids = await getTopicsIdByName(name);
-  const questions = await getQuestionByIds(ids);
+  const questions = await getQuestionByTopicIds(ids);
   return questions;
 };
+const updateTopicNamebyNameHandler = async (name) => {
+  return await updateTopicNamebyName(name);
+};
 
-module.exports = { createTopicsDb, createQuestionDb, getQuestions };
+module.exports = {
+  createTopicsDb,
+  createQuestionDb,
+  getQuestions,
+  updateTopicNamebyNameHandler,
+};
