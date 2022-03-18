@@ -1,4 +1,4 @@
-const { Topic, Question } = require("../model/model");
+const { Topic, Question, OneQueryQyestion } = require("../model/model");
 
 const updateAncestorTopicsNames = async (preName, postName) => {
   try {
@@ -52,6 +52,9 @@ const findTopicByName = async (name) => {
 const createNewQuestion = async (number, topics) => {
   return await Question.create({ number, topics });
 };
+const createNewOneQuestion = async (number, topics) => {
+  return await OneQueryQyestion.create({ number, topics });
+};
 
 const getTopicsIdByName = async (name) => {
   const result = await Topic.find({
@@ -98,6 +101,14 @@ const updateTopicNamebyName = async (prename, name) => {
 const getUpdatedAncestors = async (name, post) => {
   return await updateAncestorTopicsNames(name, post);
 };
+
+const getOneQueryQuestionNumbers = async (name) => {
+  return await OneQueryQyestion.find({
+    $or: [{ "topics.name": name }, { "topics.ancestors.name": name }],
+  })
+    .select({ number: true })
+    .exec();
+};
 module.exports = {
   updateAncestorTopicsNames,
   createFatherTopic,
@@ -107,4 +118,6 @@ module.exports = {
   getTopicsIdByName,
   getQuestionByTopicIds,
   updateTopicNamebyName,
+  createNewOneQuestion,
+  getOneQueryQuestionNumbers,
 };

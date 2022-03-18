@@ -59,6 +59,15 @@ const Topic = mongoose.model("Topic", topicSchema);
 
 const Question = mongoose.model("Question", questionSChema);
 
+const oneQueryQuestionSchema = mongoose.Schema({
+  number: { type: Number, unique: true, index: true },
+  topics: [{ type: topicSchema }],
+});
+
+const OneQueryQyestion = mongoose.model(
+  "OneQueryQuestion",
+  oneQueryQuestionSchema
+);
 const updateAllNames = async (id, name) => {
   try {
     const topics = await Topic.updateMany(
@@ -75,4 +84,5 @@ const updateAllNames = async (id, name) => {
 module.exports = {
   Topic,
   Question,
+  OneQueryQyestion,
 };

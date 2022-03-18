@@ -6,6 +6,8 @@ const {
   getTopicsIdByName,
   getQuestionByTopicIds,
   updateTopicNamebyName,
+  createNewOneQuestion,
+  getOneQueryQuestionNumbers,
 } = require("./services");
 
 const createTopicsDb = async (arr) => {
@@ -58,35 +60,43 @@ function csvToArray(text) {
   return ret;
 }
 
-const createQuestionDb = async (arr) => {
+const createQuestionDb = async (arr, value) => {
   const topics = [];
   const parsedArray = csvToArray(arr);
   for (let i = 0; i < parsedArray.length; i++) {
     if (i === 0) continue;
-    const topic = await handleQuestionsRows(parsedArray[i]);
+    const topic = await handleQuestionsRows(parsedArray[i], value);
     topics.push(topic);
   }
   return topics;
 };
 
-const handleQuestionsRows = async (arr) => {
+const handleQuestionsRows = async (arr, value) => {
   const questions = [];
   let number;
   const topics = [];
 
   for (let i = 0; i < arr.length; i++) {
-    if (arr[i].isEmpty || arr[i] === "") continue;
+    if (arr[i].isBlank || arr[i] === "") continue;
     if (i === 0) {
       number = parseInt(arr[i]);
       if (!number) break;
     } else {
       const topic = await findTopicByName(arr[i]);
       if (!topic) return;
-      topics.push(topic._id);
+      if (value === "one") {
+        topics.push(topic);
+      } else topics.push(topic._id);
     }
   }
   if (!number) return;
-  const question = await createNewQuestion(number, topics);
+  if (value === "one") {
+    const question = await createNewOneQuestion(number, topics);
+  } else {
+    const question = await createNewQuestion(number, topics);
+  }
+
+  number = "s";
 
   return questions;
 };
@@ -100,9 +110,17 @@ const updateTopicNamebyNameHandler = async (name) => {
   return await updateTopicNamebyName(name);
 };
 
+// one query Question
+const getQuestionswithOneQuery = async (name) => {
+  const result = await getOneQueryQuestionNumbers(name);
+
+  return result.map((e) => e.number);
+};
+
 module.exports = {
   createTopicsDb,
   createQuestionDb,
   getQuestions,
   updateTopicNamebyNameHandler,
+  getQuestionswithOneQuery,
 };

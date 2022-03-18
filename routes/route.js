@@ -1,5 +1,5 @@
 const express = require("express");
-const router = express.router();
+const router = express.Router();
 const fs = require("fs");
 
 const {
@@ -7,6 +7,7 @@ const {
   createQuestionDb,
   getQuestions,
   updateTopicNamebyNameHandler,
+  getQuestionswithOneQuery,
 } = require("./controller");
 
 //create Topics db
@@ -31,12 +32,31 @@ router.get("/questions", async (req, res) => {
       console.log(error);
     });
 });
+//crete one query question db
+router.get("/one-questions", async (req, res) => {
+  fs.createReadStream("./puplic/uploads/p.csv", { encoding: "utf-8" })
+    .on("data", async (chunk) => {
+      console.log(chunk);
+      const questinos = await createQuestionDb(chunk, "one");
+      console.log(questinos);
+    })
+    .on("error", (error) => {
+      console.log(error);
+    });
+});
 
 //main function
 router.get("/search", async (req, res) => {
   const name = req.query.q;
 
   const numbers = await getQuestions(name);
+  res.json(numbers);
+});
+/// oneQuery Search
+router.get("/one-query-search", async (req, res) => {
+  const name = req.query.q;
+
+  const numbers = await getQuestionswithOneQuery(name);
   res.json(numbers);
 });
 
