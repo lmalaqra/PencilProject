@@ -1,8 +1,10 @@
+require("dotenv").config();
+
 const mongoose = require("mongoose");
 exports.connect = () => {
   // Connecting to the database
   mongoose
-    .connect("mongodb://localhost:27017/pencilDB", {
+    .connect(process.env.MONGO, {
       useNewUrlParser: true,
     })
     .then(() => {

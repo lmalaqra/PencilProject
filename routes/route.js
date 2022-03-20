@@ -14,8 +14,12 @@ const {
 router.get("/read", async (req, res) => {
   fs.createReadStream("./puplic/uploads/topics.csv", { encoding: "utf-8" })
     .on("data", async (chunk) => {
-      const topics = await createTopicsDb(chunk);
-      console.log(topics);
+      try {
+        const topics = await createTopicsDb(chunk);
+        res.json(topics);
+      } catch (e) {
+        res.json(e);
+      }
     })
     .on("error", (error) => {
       console.log(error);
@@ -25,20 +29,12 @@ router.get("/read", async (req, res) => {
 router.get("/questions", async (req, res) => {
   fs.createReadStream("./puplic/uploads/p.csv", { encoding: "utf-8" })
     .on("data", async (chunk) => {
-      const questinos = await createQuestionDb(chunk);
-      console.log(questions);
-    })
-    .on("error", (error) => {
-      console.log(error);
-    });
-});
-//crete one query question db
-router.get("/one-questions", async (req, res) => {
-  fs.createReadStream("./puplic/uploads/p.csv", { encoding: "utf-8" })
-    .on("data", async (chunk) => {
-      console.log(chunk);
-      const questinos = await createQuestionDb(chunk, "one");
-      console.log(questinos);
+      try {
+        const questinos = await createQuestionDb(chunk, "2");
+        res.json(questinos);
+      } catch (e) {
+        res.json(e);
+      }
     })
     .on("error", (error) => {
       console.log(error);
@@ -52,19 +48,12 @@ router.get("/search", async (req, res) => {
   const numbers = await getQuestions(name);
   res.json(numbers);
 });
-/// oneQuery Search
-router.get("/one-query-search", async (req, res) => {
-  const name = req.query.q;
 
-  const numbers = await getQuestionswithOneQuery(name);
-  res.json(numbers);
-});
-
-///test for updating Topics tree nomes when changing node name
+///updating Topics tree nomes when changing node name
 router.get("/updateName", async (req, res) => {
   try {
-    const { preName, name } = req.query;
-    const topic = updateTopicNamebyNameHandler(preName, name);
+    const { prevName, name } = req.query;
+    const topic = updateTopicNamebyNameHandler(prevName, name);
     res.status(200).send("succefully updated topic");
   } catch (e) {
     res.status(400).send("error updationg topic");

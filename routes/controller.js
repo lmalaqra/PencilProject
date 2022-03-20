@@ -84,19 +84,12 @@ const handleQuestionsRows = async (arr, value) => {
     } else {
       const topic = await findTopicByName(arr[i]);
       if (!topic) return;
-      if (value === "one") {
-        topics.push(topic);
-      } else topics.push(topic._id);
+      topics.push(topic._id);
     }
   }
   if (!number) return;
-  if (value === "one") {
-    const question = await createNewOneQuestion(number, topics);
-  } else {
-    const question = await createNewQuestion(number, topics);
-  }
 
-  number = "s";
+  const question = await createNewQuestion(number, topics);
 
   return questions;
 };
@@ -110,17 +103,9 @@ const updateTopicNamebyNameHandler = async (name) => {
   return await updateTopicNamebyName(name);
 };
 
-// one query Question
-const getQuestionswithOneQuery = async (name) => {
-  const result = await getOneQueryQuestionNumbers(name);
-
-  return result.map((e) => e.number);
-};
-
 module.exports = {
   createTopicsDb,
   createQuestionDb,
   getQuestions,
   updateTopicNamebyNameHandler,
-  getQuestionswithOneQuery,
 };

@@ -40,6 +40,7 @@ const questionSChema = mongoose.Schema({
 
 topicSchema.pre("save", function (next) {
   const paths = this.modifiedPaths();
+  console.log(paths);
   if (paths.includes("name")) {
     this.isDocUpdated = true;
   }
@@ -51,7 +52,8 @@ topicSchema.post("save", async function (doc) {
   if (this.isDocUpdated) {
     console.log(mongoose.isValidObjectId(doc._id));
     const topics = await updateAllNames(doc._id, doc.name);
-    console.log(topics);
+  } else {
+    return;
   }
 });
 
@@ -59,15 +61,6 @@ const Topic = mongoose.model("Topic", topicSchema);
 
 const Question = mongoose.model("Question", questionSChema);
 
-const oneQueryQuestionSchema = mongoose.Schema({
-  number: { type: Number, unique: true, index: true },
-  topics: [{ type: topicSchema }],
-});
-
-const OneQueryQyestion = mongoose.model(
-  "OneQueryQuestion",
-  oneQueryQuestionSchema
-);
 const updateAllNames = async (id, name) => {
   try {
     const topics = await Topic.updateMany(
