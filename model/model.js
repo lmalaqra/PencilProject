@@ -77,5 +77,4 @@ const updateAllNames = async (id, name) => {
 module.exports = {
   Topic,
   Question,
-  OneQueryQyestion,
 };
